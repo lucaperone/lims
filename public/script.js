@@ -19,6 +19,10 @@ function displayData(data) {
 		row.forEach((col, index) => {
 			if (index == 1) {
 				html_string += "<td>[Libraries]</td>"
+			} else if (index == 7) {
+				html_string += "<td>[Lanes]</td>"
+			} else if (index == 8) {
+				html_string += "<td>[Multiplex]</td>"
 			} else {
 				html_string += `<td>${col}</td>`
 			}

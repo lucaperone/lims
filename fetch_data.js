@@ -59,19 +59,54 @@ async function fetchData() {
 	console.log("Merging requests...")
 
 	var merged_requests = new Array()
-	merged_requests.push(cleanupRow(requests[0]))
+	var groups_indexed = new Array()
+	var nb_untitled = addRequest(
+		requests[0],
+		merged_requests,
+		0,
+		groups_indexed
+	)
 
 	for (let i = 0; i < requests.length - 1; i++) {
 		const row = requests[i]
 		const next_row = requests[i + 1]
 
 		if (
-			JSON.stringify(cleanupRow(row)) ===
-			JSON.stringify(cleanupRow(next_row))
+			row[2] == next_row[2] && // Same Laboratory
+			row[3] == next_row[3] && // Same Library
+			row[4] == next_row[4] && // Same Run type
+			row[5] == next_row[5] && // Same Read Length
+			row[8] == next_row[8] && // Same Group
+			row[9] == next_row[9] // Same Submitter
 		) {
-			merged_requests[merged_requests.length - 1][1].push(row[1])
+			if (row[8] == "") {
+				updateRequest(
+					next_row,
+					merged_requests,
+					groups_indexed.indexOf("untitled" + nb_untitled)
+				) // Similar but untitled
+			} else {
+				updateRequest(
+					next_row,
+					merged_requests,
+					groups_indexed.indexOf(row[8])
+				) // Similar and titled
+			}
 		} else {
-			merged_requests.push(cleanupRow(next_row))
+			if (groups_indexed.includes(next_row[8]) && next_row != "") {
+				updateRequest(
+					next_row,
+					merged_requests,
+					groups_indexed.indexOf(next_row[8])
+				) // Not similar, titled, already present
+			} else {
+				nb_untitled = addRequest(
+					next_row,
+					merged_requests,
+					nb_untitled,
+					groups_indexed
+				) // New
+			}
 		}
 	}
 	console.log("Merged requests into " + merged_requests.length + " pools\n")
@@ -86,7 +121,27 @@ async function fetchData() {
 }
 
 function cleanupRow(row) {
-	return [row[8], [], row[2], row[9], row[3], row[4], row[5], row[6], row[7]]
+	return [row[8], [], row[2], row[9], row[3], row[4], row[5], [], []]
+}
+
+function addRequest(row, requests, nb_untitled, groups_indexed) {
+	var cleaned_row = cleanupRow(row)
+	if (row[8] == "") {
+		nb_untitled++
+		cleaned_row[0] = "untitled" + nb_untitled
+	} else {
+		cleaned_row[0] = row[8]
+	}
+	groups_indexed.push(cleaned_row[0])
+	requests.push(cleaned_row)
+
+	return nb_untitled
+}
+
+function updateRequest(row, requests, index) {
+	requests[index][1].push(row[1]) // Store all libraries
+	requests[index][7].push(row[6]) // Store all lanes (should be 1)
+	requests[index][8].push(row[7]) // Store all Multiplex (should be 1)
 }
 
 module.exports = {
