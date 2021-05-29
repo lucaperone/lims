@@ -1,0 +1,110 @@
+body {
+	font-family: "Roboto", sans-serif;
+	font-weight: 400;
+}
+
+h3 {
+	font-weight: 500;
+}
+
+#pools-to-sequence {
+	border-right: 2px solid lightgray;
+}
+
+table#pools td {
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+}
+
+.cache {
+	vertical-align: super;
+}
+
+.untitled {
+	color: red;
+}
+
+.pool {
+	height: 55px;
+	border-radius: 10px;
+	display: flex;
+	flex-wrap: nowrap;
+	justify-content: space-around;
+	align-items: center;
+	margin-bottom: 5px;
+	cursor: grab;
+}
+
+.pool.SR50,
+tr.SR50 {
+	background-color: #ffead2;
+}
+.pool.SR100,
+tr.SR100 {
+	background-color: #e4ffdf;
+}
+.pool.PE50,
+tr.PE50 {
+	background-color: #cdfaff;
+}
+.pool.PE100,
+tr.PE100 {
+	background-color: #ffe2ff;
+}
+
+.pool > span {
+	flex-grow: 0;
+	padding: 0px 25px;
+}
+
+.pool > span:first-child {
+	padding-left: 25px;
+	flex-grow: 1;
+	font-size: large;
+}
+
+.run-container {
+	height: 480px;
+	position: relative;
+	margin-bottom: 20px;
+}
+
+.run-plan {
+	padding-left: 50px;
+	height: 100%;
+	position: relative;
+}
+
+.run-ui {
+	height: 100%;
+	position: absolute;
+	width: 100%;
+	top: 0;
+	left: 0;
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.run-ui > div.lane-number {
+	height: 55px;
+	width: 40px;
+	border-radius: 10px;
+	border: 2px solid lightgray;
+	margin-right: 10px;
+	margin-bottom: 5px;
+	text-align: center;
+	padding-top: 8px;
+	font-size: x-large;
+	flex-basis: auto;
+	flex-grow: 0;
+}
+
+.run-ui > div.placeholder {
+	height: 55px;
+	margin-bottom: 5px;
+	width: calc(100% - 61px);
+	border-radius: 10px;
+	border: 2px dashed lightgray;
+	flex-basis: auto;
+	flex-grow: 1;
+}

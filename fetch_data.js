@@ -13,9 +13,16 @@ async function fetchData() {
 	console.log("Merging requests...")
 
 	const pools = new Array()
+	let nb_untitled = 0
 
 	for (let i = 0; i < requests.length; i++) {
-		multiplex = parseInt(requests[i][7])
+		let multiplex
+		if (requests[i][7] === "No") {
+			multiplex = 1
+		} else {
+			multiplex = parseInt(requests[i][7])
+		}
+
 		if (multiplex === NaN) {
 			return {
 				error: `Error with request ${requests[i][0]} - Multiplex# "${requests[i][7]}" is not a number`,
@@ -31,6 +38,9 @@ async function fetchData() {
 			return { error: pool.error }
 		} else {
 			pool.ready = isReady(pool, libraries)
+			if (pool.group === "") {
+				pool.group = `Untitled-${++nb_untitled}`
+			}
 			pools.push(pool)
 		}
 		i += multiplex - 1
@@ -164,18 +174,10 @@ function isReady(pool, libraries) {
 	return pool.libraries.every((library) => libraries.includes(library))
 }
 
-function cleanupRow(row) {
-	return [row[8], [], row[2], row[9], row[3], row[4], row[5], [], []]
-}
-
 module.exports = {
 	fetchData: async function () {
 		return await fetchData()
 	},
 }
 
-// async function main() {
-// 	console.log(await fetchData())
-// }
-
-// main()
+// fetchData()
