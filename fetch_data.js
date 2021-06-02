@@ -7,42 +7,54 @@ const libraries_url =
 	"https://lims.ige3.genomics.unige.ch/table/libraries/selactive"
 
 async function fetchData() {
-	console.log("Starting applcation...\n")
+	console.log("Starting browser...\n")
 	const { libraries, requests } = await webScrapper()
 
 	console.log("Merging requests...")
 
 	const pools = new Array()
-	let nb_untitled = 0
+	const pool_names = new Array()
 
 	for (let i = 0; i < requests.length; i++) {
+		const pool_name = requests[i][8]
+		if (pool_name === "") {
+			continue // TO REMOVE : only for testing
+			return error(requests[i][0], "No group name")
+		}
+
+		if (pool_names.includes(pool_name)) {
+			continue
+		}
+		pool_names.push(pool_name)
+
 		let multiplex
 		if (requests[i][7] === "No") {
 			multiplex = 1
+		} else if (requests[i][7] === "Spike") {
+			multiplex = -1
 		} else {
 			multiplex = parseInt(requests[i][7])
 		}
 
-		if (multiplex === NaN) {
-			return {
-				error: `Error with request ${requests[i][0]} - Multiplex# "${requests[i][7]}" is not a number`,
-			}
+		if (isNaN(multiplex)) {
+			return error(
+				requests[i][0],
+				`Multiplex# "${requests[i][7]}" should be a number, "Spike" or "No"`
+			)
 		}
 
 		const pool = parseAndMergeRequests(
-			requests.slice(i, i + multiplex),
+			requests.filter((request) => request[8] === pool_name),
 			multiplex
 		)
 
 		if (pool.error != "") {
 			return { error: pool.error }
-		} else {
-			pool.ready = isReady(pool, libraries)
-			if (pool.group === "") {
-				pool.group = `Untitled-${++nb_untitled}`
-			}
-			pools.push(pool)
 		}
+
+		pool.ready = isReady(pool, libraries)
+		pools.push(pool)
+
 		i += multiplex - 1
 	}
 
@@ -65,6 +77,7 @@ async function webScrapper() {
 	await page.goto(login_url)
 
 	// Login
+	console.log("Logging in...\n")
 	await page.type("#lg_name", "lperone")
 	await page.type("#lg_password", "tkk4dbvb")
 	await page.click("input[type='submit']")
@@ -109,37 +122,45 @@ async function webScrapper() {
 }
 
 function parseAndMergeRequests(requests, multiplex) {
-	if (requests.every((request) => similar(request, requests))) {
-		const run_type = parseRun(requests[0][4])
-		if (run_type === "error") {
-			return {
-				error: `Error with request ${requests[0][0]} - Unkown run type "${requests[0][4]}"`,
-			}
-		} else {
-			const lanes = parseFloat(requests[0][6])
-			if (lanes === NaN) {
-				return {
-					error: `Error with request ${requests[0][0]} - Nb lanes "${requests[0][6]}" is not a number`,
-				}
-			}
-			return {
-				error: "",
-				libraries: groupLibraries(requests),
-				lab: requests[0][2],
-				protocol: requests[0][3],
-				run: run_type,
-				read: requests[0][5],
-				lanes: lanes,
-				multiplex: multiplex,
-				group: requests[0][8],
-				submitter: requests[0][9],
-				ready: false,
-			}
-		}
-	} else {
-		return {
-			error: `Error with request ${requests[0][0]} - Number of multiplex given: ${requests[0][7]}, not enough similar requests found.`,
-		}
+	if (requests.length != multiplex && multiplex !== -1) {
+		return error(
+			requests[0][0],
+			`Couldn't find ${requests[0][7]} requests for pool "${requests[0][8]}"`
+		)
+	}
+
+	if (!requests.every((request) => similar(request, requests))) {
+		return error(
+			requests[0][0],
+			`Requests in pool ${requests[0][8]} don't share the same information`
+		)
+	}
+
+	const run_type = parseRun(requests[0][4])
+	if (run_type === "error") {
+		return error(requests[0][0], `Unkown run type "${requests[0][4]}"`)
+	}
+
+	const lanes = parseFloat(requests[0][6])
+	if (isNaN(lanes)) {
+		return error(
+			requests[0][0],
+			`Nb lanes "${requests[0][6]}" is not a number`
+		)
+	}
+
+	return {
+		error: "",
+		libraries: groupLibraries(requests),
+		lab: requests[0][2],
+		protocol: requests[0][3],
+		run: run_type,
+		read: requests[0][5],
+		lanes: lanes,
+		multiplex: multiplex,
+		group: requests[0][8],
+		submitter: requests[0][9],
+		ready: false,
 	}
 }
 
@@ -172,6 +193,15 @@ function parseRun(run) {
 
 function isReady(pool, libraries) {
 	return pool.libraries.every((library) => libraries.includes(library))
+}
+
+function error(request_id, message) {
+	console.error(
+		`\nError with request ${request_id} - ${message}.\nAborting process.\n`
+	)
+	return {
+		error: `Error with request ${request_id} - ${message}.`,
+	}
 }
 
 module.exports = {
