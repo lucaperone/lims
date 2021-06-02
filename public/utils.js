@@ -4,20 +4,20 @@ export async function getData(page) {
 		type: "GET",
 		url: "/data",
 		success: function (response) {
-			if (response.error === "") {
-				document.cookie = "error= ;"
-			}
+			displayBasicData(response)
 
-			if (page === "index") {
-				displayIndexData(response)
-			} else {
-				displayCreateData(response)
+			if (response.error === "") {
+				if (page === "index") {
+					displayIndexData(response)
+				} else {
+					displayCreateData(response)
+				}
 			}
 		},
 		error: function (xhr, status, err) {
 			console.log(xhr.responseText)
 		},
-	}).then((res) => end(res))
+	}).then((response) => end(response))
 }
 
 function start() {
@@ -26,44 +26,53 @@ function start() {
 	$(".cache").addClass("d-none")
 }
 
-function end(res) {
+function end(response) {
 	$("button#load").prop("disabled", false)
 	$(".loader").addClass("d-none")
 	$(".cache").removeClass("d-none")
-	document.cookie = "lims-requests = " + JSON.stringify(res)
+
+	localStorage.setItem("lims-requests", JSON.stringify(response))
+
 	const now = new Date()
-	document.cookie = "lims-date = " + now.toString()
+	localStorage.setItem("lims-date", now.toString())
 	$(".cache").html(`Last time: ${now.toLocaleString("fr-CH")}`)
 }
 
-function getCookie(name) {
-	const value = `; ${document.cookie}`
-	const parts = value.split(`; ${name}=`)
-	if (parts.length === 2) return parts.pop().split(";").shift()
-}
-
 export function welcome(page, filter) {
-	if (document.cookie.includes("lims-requests")) {
-		if (page === "index") {
-			displayIndexData(JSON.parse(getCookie("lims-requests")))
-		} else {
-			displayCreateData(JSON.parse(getCookie("lims-requests")), filter)
+	const cache = localStorage.getItem("lims-requests")
+	if (cache) {
+		const requests = JSON.parse(cache)
+		displayBasicData(requests)
+
+		if (requests.error === "") {
+			if (page === "index") {
+				displayIndexData(requests)
+			} else {
+				displayCreateData(requests, filter)
+			}
 		}
 	} else {
 		getData(page)
 	}
 }
 
-function displayIndexData(data) {
-	const date = new Date(getCookie("lims-date")).toLocaleString("fr-CH")
+function displayBasicData(data) {
+	const date = new Date(localStorage.getItem("lims-date")).toLocaleString(
+		"fr-CH"
+	)
 	$(".cache").html(`Last time: ${date}`)
 	const { error, pools } = data
 
 	if (error != "") {
 		$("#error").removeClass("d-none")
 		$("#error").html(error)
-		return
+	} else {
+		$("#error").addClass("d-none")
 	}
+}
+
+function displayIndexData(data) {
+	const { error, pools } = data
 
 	let html_string = ""
 	pools.forEach((pool) => {
@@ -87,15 +96,7 @@ function displayIndexData(data) {
 }
 
 function displayCreateData(data, filter) {
-	const date = new Date(getCookie("lims-date")).toLocaleString("fr-CH")
-	$(".cache").html(`Last time: ${date}`)
 	const { error, pools } = data
-
-	if (error != "") {
-		$("#error").removeClass("d-none")
-		$("#error").html(error)
-		return
-	}
 
 	let html_string = ""
 	pools.forEach((pool) => {
