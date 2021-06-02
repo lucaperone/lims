@@ -42,12 +42,12 @@ function hideRuns() {
 }
 
 function loadData() {
-	getData("create")
 	$(".pool").remove()
+	getData("create")
 }
 
 function placePools() {
-	$($(".pool").get().reverse()).each(function () {
+	$($(".pool:not(.spike-pool)").get().reverse()).each(function () {
 		const run_plan = `#${$(this).data("runtype")} .run-plan`
 		const pool_size = $(this).data("size")
 		const current_size = idsToSizes($(run_plan).sortable("toArray")).reduce(
@@ -60,12 +60,15 @@ function placePools() {
 		}
 	})
 	const runtypes = ["SR50", "SR100", "PE50", "PE100"]
-	runtypes.forEach(function (runtype) {
-		state[runtype] = $(`#${runtype} .run-plan`).sortable("toArray")
-	})
+	runtypes.forEach(
+		(runtype) =>
+			(state[runtype] = $(`#${runtype} .run-plan`).sortable("toArray"))
+	)
+	console.log(state)
 }
 
 function handleCompatibility(event, ui) {
+	// TODO: merge with update ? in else statement
 	const target_type = $(event.target).data("runtype")
 	const pool_type = $(ui.item).data("runtype")
 	const sender = ui.sender
@@ -121,6 +124,52 @@ function shouldCancel(pool_type, target_type) {
 	return false
 }
 
+function getSpikeFilter() {
+	const filter = {
+		SR50: false,
+		SR100: false,
+		PE50: false,
+		PE100: false,
+	}
+	$("#spikes > div").each(function () {
+		filter[$(this).data("runtype")] = true
+	})
+	console.log(filter)
+	return filter
+}
+
+function generatePlanners(spike_filter) {
+	for (const runtype of Object.keys(spike_filter)) {
+		for (let lane = 1; lane <= 8; lane++) {
+			let spike_html = ""
+			if (spike_filter[runtype]) {
+				spike_html = '<div class="placeholder placeholder-spike"></div>'
+				$(`#${runtype}`).removeClass("col-6").addClass("col-12")
+				$(`#${runtype} .run-container`).addClass("spiked")
+			}
+			$(`#${runtype} .run-ui`).append(`
+				<div class="lane-row lane-${lane}">
+					<div class="lane-number">${lane}</div>
+					<div class="placeholder"></div>
+					${spike_html}
+				</div>
+			`)
+		}
+	}
+}
+
+function test(event, ui) {
+	const pool_type = $(ui.item).data("runtype")
+
+	let height = 0
+	console.log(pool_type)
+	$(`#${pool_type} .placeholder-spike`).each(function () {
+		height += $(this).outerHeight() + 5
+		console.log($(this).outerHeight() + 5)
+	})
+	$(`#${pool_type} .run-container`).height(height)
+}
+
 $(function () {
 	hideRuns()
 
@@ -128,6 +177,7 @@ $(function () {
 	$("#auto").click((_) => placePools())
 	// TODO : Spike
 	welcome("create")
+	generatePlanners(getSpikeFilter())
 
 	$(".run-plan").sortable({
 		connectWith: ".run-plan, #pools",
@@ -141,6 +191,18 @@ $(function () {
 	})
 	$("#pools").sortable({
 		connectWith: ".run-plan",
+		cursor: "grabbing",
+	})
+
+	$(".placeholder-spike").sortable({
+		connectWith: ".placeholder-spike, #spikes",
+		cursor: "grabbing",
+		receive: function (event, ui) {
+			test(event, ui)
+		},
+	})
+	$("#spikes").sortable({
+		connectWith: ".placeholder-spike",
 		cursor: "grabbing",
 	})
 })

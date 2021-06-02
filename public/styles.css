@@ -35,6 +35,10 @@ table#pools td {
 	cursor: grab;
 }
 
+.spike-pool {
+	height: 23px;
+}
+
 .pool.SR50,
 tr.SR50 {
 	background-color: #ffead2;
@@ -75,17 +79,25 @@ tr.PE100 {
 	position: relative;
 }
 
+.run-container.spiked .run-plan {
+	max-width: 50%;
+}
+
 .run-ui {
 	height: 100%;
 	position: absolute;
 	width: 100%;
 	top: 0;
 	left: 0;
+}
+
+.lane-row {
+	width: 100%;
 	display: flex;
 	flex-wrap: wrap;
 }
 
-.run-ui > div.lane-number {
+.lane-row > div.lane-number {
 	height: 55px;
 	width: 40px;
 	border-radius: 10px;
@@ -99,12 +111,23 @@ tr.PE100 {
 	flex-grow: 0;
 }
 
-.run-ui > div.placeholder {
+.lane-row > div.placeholder {
 	height: 55px;
 	margin-bottom: 5px;
-	width: calc(100% - 61px);
+	width: calc(50% - 61px);
 	border-radius: 10px;
 	border: 2px dashed lightgray;
 	flex-basis: auto;
 	flex-grow: 1;
+}
+
+.lane-row > div.placeholder.placeholder-spike {
+	margin-left: 10px;
+	width: calc(50% - 10px);
+	border-style: dotted;
+	height: auto;
+}
+
+.placeholder-spike .spike-pool:last-child {
+	margin-bottom: 0;
 }

@@ -99,29 +99,39 @@ function displayCreateData(data) {
 	const { error, pools } = data
 	const filter = getFilter()
 
-	let html_string = ""
+	let pools_html = ""
+	let spikes_html = ""
 	pools.forEach((pool) => {
 		if (filter[`${pool.run}${pool.read}`]) {
 			let spike = ""
+			let pool_height = ""
 			if (pool.multiplex === -1) {
-				spike = " class='spike'"
+				spike = "spike-pool"
+			} else {
+				pool_height = `style = "height: calc(${pool.lanes} * 60px - 5px)"`
 			}
-			html_string += `
+			const temp_html = `
                 <div
                     id="${pool.group.replaceAll(/\W/g, "")}"
-                    class="pool ${pool.run}${pool.read}"
-                    style="height: calc(${pool.lanes} * 60px - 5px"
+                    class="pool ${pool.run}${pool.read} ${spike}"
+                    ${pool_height}
                     data-size="${pool.lanes}"
 					data-group="${pool.group}"
                     data-runtype="${pool.run}${pool.read}">
-                        <span${spike}>${pool.group}</span>
+                        <span>${pool.group}</span>
                         <span>${pool.run} ${pool.read}</span>
                         <span>${pool.ready ? "✔️" : "❌"}</span>
                 </div>
 		    `
+			if (pool.multiplex === -1) {
+				spikes_html += temp_html
+			} else {
+				pools_html += temp_html
+			}
 		}
 	})
-	$("#pools").html(html_string)
+	$("#spikes").html(spikes_html)
+	$("#pools").html(pools_html)
 }
 
 export function getFilter() {
