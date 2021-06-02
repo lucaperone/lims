@@ -38,7 +38,7 @@ function end(response) {
 	$(".cache").html(`Last time: ${now.toLocaleString("fr-CH")}`)
 }
 
-export function welcome(page, filter) {
+export function welcome(page) {
 	const cache = localStorage.getItem("lims-requests")
 	if (cache) {
 		const requests = JSON.parse(cache)
@@ -48,7 +48,7 @@ export function welcome(page, filter) {
 			if (page === "index") {
 				displayIndexData(requests)
 			} else {
-				displayCreateData(requests, filter)
+				displayCreateData(requests)
 			}
 		}
 	} else {
@@ -76,13 +76,13 @@ function displayIndexData(data) {
 
 	let html_string = ""
 	pools.forEach((pool) => {
-		let untitled = ""
-		if (pool.group.includes("Untitled")) {
-			untitled = " class='untitled'"
+		let spike = ""
+		if (pool.multiplex === -1) {
+			spike = " class='spike'"
 		}
 		html_string += `
 			<tr class="${pool.run}${pool.read}">
-				<td${untitled}>${pool.group}</td>
+				<td${spike}>${pool.group}</td>
 				<td>${pool.lab} (${pool.submitter})</td>
 				<td>${pool.libraries.length}</td>
 				<td>${pool.protocol}</td>
@@ -95,24 +95,26 @@ function displayIndexData(data) {
 	$("table#pools tbody").html(html_string)
 }
 
-function displayCreateData(data, filter) {
+function displayCreateData(data) {
 	const { error, pools } = data
+	const filter = getFilter()
 
 	let html_string = ""
 	pools.forEach((pool) => {
 		if (filter[`${pool.run}${pool.read}`]) {
-			let untitled = ""
-			if (pool.group.includes("Untitled")) {
-				untitled = " class='untitled'"
+			let spike = ""
+			if (pool.multiplex === -1) {
+				spike = " class='spike'"
 			}
 			html_string += `
                 <div
-                    id="${pool.group}"
+                    id="${pool.group.replaceAll(/\W/g, "")}"
                     class="pool ${pool.run}${pool.read}"
                     style="height: calc(${pool.lanes} * 60px - 5px"
                     data-size="${pool.lanes}"
+					data-group="${pool.group}"
                     data-runtype="${pool.run}${pool.read}">
-                        <span${untitled}>${pool.group}</span>
+                        <span${spike}>${pool.group}</span>
                         <span>${pool.run} ${pool.read}</span>
                         <span>${pool.ready ? "✔️" : "❌"}</span>
                 </div>
@@ -120,4 +122,14 @@ function displayCreateData(data, filter) {
 		}
 	})
 	$("#pools").html(html_string)
+}
+
+export function getFilter() {
+	const url = new URL(window.location.href)
+	return {
+		SR50: url.searchParams.get("sr50"),
+		SR100: url.searchParams.get("sr100"),
+		PE50: url.searchParams.get("pe50"),
+		PE100: url.searchParams.get("pe100"),
+	}
 }

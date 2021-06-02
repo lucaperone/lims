@@ -1,12 +1,4 @@
-import { welcome, getData } from "./utils.js"
-
-var url_string = window.location.href
-var url = new URL(url_string)
-
-const sr50 = url.searchParams.get("sr50")
-const sr100 = url.searchParams.get("sr100")
-const pe50 = url.searchParams.get("pe50")
-const pe100 = url.searchParams.get("pe100")
+import { welcome, getData, getFilter } from "./utils.js"
 
 const state = {
 	SR50: [],
@@ -43,10 +35,10 @@ const compatibility_table = {
 }
 
 function hideRuns() {
-	if (!sr50) $("#SR50").remove()
-	if (!sr100) $("#SR100").remove()
-	if (!pe50) $("#PE50").remove()
-	if (!pe100) $("#PE100").remove()
+	const filter = getFilter()
+	for (const runtype of Object.keys(filter)) {
+		if (!filter[runtype]) $(`#${runtype}`).remove()
+	}
 }
 
 function loadData() {
@@ -80,7 +72,7 @@ function handleCompatibility(event, ui) {
 
 	if (shouldCancel(pool_type, target_type)) {
 		$(sender).sortable("cancel")
-		animateError(ui.item)
+		ui.item.effect("shake")
 	}
 }
 
@@ -91,7 +83,7 @@ function handleUpdate(event, ui, source) {
 	if (ui.sender === null) {
 		if (shouldCancel(pool_type, source_type)) {
 			$(source).sortable("cancel")
-			animateError(ui.item)
+			ui.item.effect("shake")
 		}
 	} else {
 		state[source_type] = $(source).sortable("toArray")
@@ -129,22 +121,13 @@ function shouldCancel(pool_type, target_type) {
 	return false
 }
 
-function animateError(pool) {
-	$(pool).effect("shake")
-}
-
 $(function () {
 	hideRuns()
 
 	$("#load").click((_) => loadData())
 	$("#auto").click((_) => placePools())
 	// TODO : Spike
-	welcome("create", {
-		SR50: sr50,
-		SR100: sr100,
-		PE50: pe50,
-		PE100: pe100,
-	})
+	welcome("create")
 
 	$(".run-plan").sortable({
 		connectWith: ".run-plan, #pools",
