@@ -64,7 +64,6 @@ function placePools() {
 		(runtype) =>
 			(state[runtype] = $(`#${runtype} .run-plan`).sortable("toArray"))
 	)
-	console.log(state)
 }
 
 function handleCompatibility(event, ui) {
@@ -194,18 +193,26 @@ $(function () {
 		update: function (event, ui) {
 			handleUpdate(event, ui, this)
 		},
+		scrollSensitivity: 150,
+		scrollSpeed: 30,
 	})
 	$("#pools").sortable({
 		connectWith: ".run-plan",
 		cursor: "grabbing",
+		scrollSensitivity: 150,
+		scrollSpeed: 30,
 	})
 
 	$(".spikes-container").sortable({
 		connectWith: ".spikes-container, #spikes",
 		cursor: "grabbing",
+		scrollSensitivity: 150,
+		scrollSpeed: 30,
 	})
 	$("#spikes").sortable({
 		connectWith: ".spikes-container",
 		cursor: "grabbing",
+		scrollSensitivity: 150,
+		scrollSpeed: 30,
 	})
 })

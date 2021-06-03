@@ -72,6 +72,31 @@ tr.PE100 {
 	background-color: #ffe2ff;
 }
 
+#SR50 .lane-number,
+#SR50 .placeholder,
+#SR50-spikes .lane-number,
+#SR50-spikes .spikes-container {
+	background-color: #fffaf4;
+}
+#SR100 .lane-number,
+#SR100 .placeholder,
+#SR100-spikes .lane-number,
+#SR100-spikes .spikes-container {
+	background-color: #f8fff7;
+}
+#PE50 .lane-number,
+#PE50 .placeholder,
+#PE50-spikes .lane-number,
+#PE50-spikes .spikes-container {
+	background-color: #f2feff;
+}
+#PE100 .lane-number,
+#PE100 .placeholder,
+#PE100-spikes .lane-number,
+#PE100-spikes .spikes-container {
+	background-color: #fff8ff;
+}
+
 .pool.spike-pool,
 tr.spike {
 	background-color: #f3f3f3;
@@ -122,6 +147,10 @@ tr.spike {
 	min-height: 480px;
 	position: relative;
 	margin-bottom: 20px;
+}
+
+.pools-col .run-container {
+	height: 480px;
 }
 
 .run-plan {
