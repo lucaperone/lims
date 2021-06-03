@@ -66,29 +66,16 @@ function placePools() {
 	)
 }
 
-function handleCompatibility(event, ui) {
-	// TODO: merge with update ? in else statement
-	const target_type = $(event.target).data("runtype")
-	const pool_type = $(ui.item).data("runtype")
-	const sender = ui.sender
-
-	if (shouldCancel(pool_type, target_type)) {
-		$(sender).sortable("cancel")
-		ui.item.effect("shake")
+function updateState() {
+	for (const runtype of Object.keys(state)) {
+		state[runtype] = $(`#${runtype} .run-plan`).sortable("toArray")
 	}
 }
 
-function handleUpdate(event, ui, source) {
-	const source_type = $(source).data("runtype")
-	const pool_type = $(ui.item).data("runtype")
-
-	if (ui.sender === null) {
-		if (shouldCancel(pool_type, source_type)) {
-			$(source).sortable("cancel")
-			ui.item.effect("shake")
-		}
-	} else {
-		state[source_type] = $(source).sortable("toArray")
+function handleCompatibility(pool, receiver, sender) {
+	if (shouldCancel($(pool).data("runtype"), $(receiver).data("runtype"))) {
+		$(sender).sortable("cancel")
+		pool.effect("shake")
 	}
 }
 
@@ -187,32 +174,35 @@ $(function () {
 	$(".run-plan").sortable({
 		connectWith: ".run-plan, #pools",
 		cursor: "grabbing",
-		receive: function (event, ui) {
-			handleCompatibility(event, ui)
-		},
 		update: function (event, ui) {
-			handleUpdate(event, ui, this)
+			if (ui.sender === null) {
+				handleCompatibility(ui.item, event.target, event.target)
+			}
+			updateState()
+		},
+		receive: function (event, ui) {
+			handleCompatibility(ui.item, event.target, ui.sender)
 		},
 		scrollSensitivity: 150,
-		scrollSpeed: 30,
+		scrollSpeed: 150,
 	})
 	$("#pools").sortable({
 		connectWith: ".run-plan",
 		cursor: "grabbing",
 		scrollSensitivity: 150,
-		scrollSpeed: 30,
+		scrollSpeed: 150,
 	})
 
 	$(".spikes-container").sortable({
 		connectWith: ".spikes-container, #spikes",
 		cursor: "grabbing",
 		scrollSensitivity: 150,
-		scrollSpeed: 30,
+		scrollSpeed: 150,
 	})
 	$("#spikes").sortable({
 		connectWith: ".spikes-container",
 		cursor: "grabbing",
 		scrollSensitivity: 150,
-		scrollSpeed: 30,
+		scrollSpeed: 150,
 	})
 })
