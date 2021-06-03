@@ -7,6 +7,13 @@ const state = {
 	PE100: [],
 }
 
+const idToTitle = {
+	SR50: "Single Read 50",
+	SR100: "Single Read 100",
+	PE50: "Paired-end Reads 50",
+	PE100: "Paired-end Reads 100",
+}
+
 const compatibility_table = {
 	SR50: {
 		SR50: true,
@@ -32,13 +39,6 @@ const compatibility_table = {
 		PE50: false,
 		PE100: true,
 	},
-}
-
-function hideRuns() {
-	const filter = getFilter()
-	for (const runtype of Object.keys(filter)) {
-		if (!filter[runtype]) $(`#${runtype}`).remove()
-	}
 }
 
 function loadData() {
@@ -124,60 +124,66 @@ function shouldCancel(pool_type, target_type) {
 	return false
 }
 
-function getSpikeFilter() {
-	const filter = {
-		SR50: false,
-		SR100: false,
-		PE50: false,
-		PE100: false,
-	}
-	$("#spikes > div").each(function () {
-		filter[$(this).data("runtype")] = true
-	})
-	console.log(filter)
-	return filter
+function spiked() {
+	const url = new URL(window.location.href)
+	return !!url.searchParams.get("spike")
 }
 
-function generatePlanners(spike_filter) {
-	for (const runtype of Object.keys(spike_filter)) {
-		for (let lane = 1; lane <= 8; lane++) {
-			let spike_html = ""
-			if (spike_filter[runtype]) {
-				spike_html = '<div class="placeholder placeholder-spike"></div>'
-				$(`#${runtype}`).removeClass("col-6").addClass("col-12")
-				$(`#${runtype} .run-container`).addClass("spiked")
-			}
-			$(`#${runtype} .run-ui`).append(`
-				<div class="lane-row lane-${lane}">
-					<div class="lane-number">${lane}</div>
-					<div class="placeholder"></div>
-					${spike_html}
+function generatePlanners() {
+	const filter = getFilter()
+	const requestedRuns = Object.keys(filter).filter(
+		(runtype) => filter[runtype]
+	)
+	for (const runtype of requestedRuns) {
+		$("#runs .row").append(`
+			<div id="${runtype}" class="col-6 pools-col">
+				<h4 class="text-center mb-3">${idToTitle[runtype]}</h4>
+				<div class="run-container">
+					<div class="run-ui"></div>
+					<div class="run-plan" data-runtype="${runtype}"></div>
+				</div>
+			</div>
+		`)
+
+		if (spiked()) {
+			$("#spikes-title, #spikes").removeClass("d-none")
+			$("#runs .row").addClass("spiked")
+			$("#runs .row").append(`
+				<div id="${runtype}-spikes" class="col-6 spikes-col">
+					<h4 class="text-center mb-3">${runtype} Spikes</h4>
+					<div class="run-container" data-runtype="${runtype}">
+					</div>
 				</div>
 			`)
+		}
+
+		for (let lane = 1; lane <= 8; lane++) {
+			$(`#${runtype} .run-ui`).append(`
+				<div class="lane-row lane-${lane}">
+					<div class="lane-number"><span>${lane}</span></div>
+					<div class="placeholder"></div>
+				</div>
+			`)
+
+			if (spiked()) {
+				$(`#${runtype}-spikes .run-container`).append(`
+					<div class="lane-row lane-${lane}">
+						<div class="lane-number"><span>${lane}</span></div>
+						<div class="spikes-container"></div>
+					</div>
+				`)
+			}
 		}
 	}
 }
 
-function test(event, ui) {
-	const pool_type = $(ui.item).data("runtype")
-
-	let height = 0
-	console.log(pool_type)
-	$(`#${pool_type} .placeholder-spike`).each(function () {
-		height += $(this).outerHeight() + 5
-		console.log($(this).outerHeight() + 5)
-	})
-	$(`#${pool_type} .run-container`).height(height)
-}
-
 $(function () {
-	hideRuns()
-
 	$("#load").click((_) => loadData())
 	$("#auto").click((_) => placePools())
-	// TODO : Spike
+	$("#reset").click((_) => location.reload())
+
 	welcome("create")
-	generatePlanners(getSpikeFilter())
+	generatePlanners()
 
 	$(".run-plan").sortable({
 		connectWith: ".run-plan, #pools",
@@ -194,15 +200,12 @@ $(function () {
 		cursor: "grabbing",
 	})
 
-	$(".placeholder-spike").sortable({
-		connectWith: ".placeholder-spike, #spikes",
+	$(".spikes-container").sortable({
+		connectWith: ".spikes-container, #spikes",
 		cursor: "grabbing",
-		receive: function (event, ui) {
-			test(event, ui)
-		},
 	})
 	$("#spikes").sortable({
-		connectWith: ".placeholder-spike",
+		connectWith: ".spikes-container",
 		cursor: "grabbing",
 	})
 })

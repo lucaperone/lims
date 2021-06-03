@@ -35,6 +35,10 @@
 			</p>
 		<![endif]-->
 
+		<div id="home">
+			<a href="/"><img src="home.svg" alt="Home" /></a>
+		</div>
+
 		<div class="fluid-container pt-3 p-5">
 			<div class="row">
 				<div class="col-4 pe-3" id="pools-to-sequence">
@@ -44,65 +48,36 @@
 						class="alert alert-danger d-none mb-3"
 						role="alert"
 					></div>
-					<button
-						id="auto"
-						class="btn btn-success mb-4 d-block mx-auto"
-					>
-						Place pools automatically
-					</button>
-					<button id="load" class="btn btn-primary mb-4 me-3">
-						Load pools
-					</button>
-					<div class="loader d-none"></div>
-					<div class="cache text-muted d-inline-block">
-						Last time: never
+					<div class="text-center mb-5">
+						<button
+							id="auto"
+							class="btn btn-success d-inline-block"
+						>
+							Place pools automatically
+						</button>
+						<button
+							id="reset"
+							class="btn btn-danger d-inline-block"
+						>
+							Reset
+						</button>
 					</div>
-					<h4>Spikes</h4>
-					<div id="spikes" class="mb-3"></div>
-					<h4>Pools</h4>
+					<div class="d-flex align-items-center mb-4">
+						<button id="load" class="btn btn-primary me-3">
+							Load pools
+						</button>
+						<div class="loader d-none"></div>
+						<div class="cache text-muted d-inline-block">
+							Last time: never
+						</div>
+					</div>
+					<h4 id="spikes-title" class="d-none">Spikes</h4>
+					<div id="spikes" class="mb-3 d-none"></div>
+					<h4 id="pools-title">Pools</h4>
 					<div id="pools"></div>
 				</div>
 				<div class="col-8 ps-3" id="runs">
-					<div class="row">
-						<div id="SR50" class="col-6">
-							<h4 class="text-center mb-3">Single Read 50</h4>
-							<div class="run-container">
-								<div class="run-ui"></div>
-								<div class="run-plan" data-runtype="SR50"></div>
-							</div>
-						</div>
-						<div id="SR100" class="col-6">
-							<h4 class="text-center mb-3">Single Read 100</h4>
-							<div class="run-container">
-								<div class="run-ui"></div>
-								<div
-									class="run-plan"
-									data-runtype="SR100"
-								></div>
-							</div>
-						</div>
-						<div id="PE50" class="col-6">
-							<h4 class="text-center mb-3">
-								Paired-end reads 50
-							</h4>
-							<div class="run-container">
-								<div class="run-ui"></div>
-								<div class="run-plan" data-runtype="PE50"></div>
-							</div>
-						</div>
-						<div id="PE100" class="col-6">
-							<h4 class="text-center mb-3">
-								Paired-end reads 100
-							</h4>
-							<div class="run-container">
-								<div class="run-ui"></div>
-								<div
-									class="run-plan"
-									data-runtype="PE100"
-								></div>
-							</div>
-						</div>
-					</div>
+					<div class="row"></div>
 				</div>
 			</div>
 		</div>

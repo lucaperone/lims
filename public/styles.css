@@ -3,6 +3,16 @@ body {
 	font-weight: 400;
 }
 
+#home {
+	position: fixed;
+	top: 7px;
+	left: 7px;
+}
+
+#home img {
+	width: 25px;
+}
+
 h3 {
 	font-weight: 500;
 }
@@ -16,12 +26,15 @@ table#pools td {
 	padding-bottom: 0.5rem;
 }
 
-.cache {
-	vertical-align: super;
+table#pools td:nth-child(5) {
+	white-space: nowrap;
+	word-wrap: normal;
 }
 
-.spike {
-	color: red;
+#spikes {
+	display: flex;
+	flex-wrap: wrap;
+	margin: 0 -2.5px;
 }
 
 .pool {
@@ -37,6 +50,9 @@ table#pools td {
 
 .spike-pool {
 	height: 23px;
+	width: calc(50% - 5px);
+	flex-basis: auto;
+	margin: 0 2.5px 5px 2.5px;
 }
 
 .pool.SR50,
@@ -56,6 +72,11 @@ tr.PE100 {
 	background-color: #ffe2ff;
 }
 
+.pool.spike-pool,
+tr.spike {
+	background-color: #f3f3f3;
+}
+
 .pool > span {
 	flex-grow: 0;
 	padding: 0px 25px;
@@ -67,8 +88,38 @@ tr.PE100 {
 	font-size: large;
 }
 
+.pool-runtype {
+	white-space: nowrap;
+}
+
+.spike-pool > span {
+	padding: 0;
+}
+
+.spike-pool > span:first-child {
+	padding-left: 5px;
+	font-size: medium;
+}
+
+.spike-pool .pool-runtype {
+	display: none;
+}
+
+.spike-pool > span:last-child {
+	padding-right: 5px;
+	font-size: small;
+}
+
+.row.spiked .pools-col {
+	padding-right: 5px;
+}
+
+.row.spiked .spikes-col {
+	padding-left: 5px;
+}
+
 .run-container {
-	height: 480px;
+	min-height: 480px;
 	position: relative;
 	margin-bottom: 20px;
 }
@@ -77,10 +128,6 @@ tr.PE100 {
 	padding-left: 50px;
 	height: 100%;
 	position: relative;
-}
-
-.run-container.spiked .run-plan {
-	max-width: 50%;
 }
 
 .run-ui {
@@ -105,10 +152,22 @@ tr.PE100 {
 	margin-right: 10px;
 	margin-bottom: 5px;
 	text-align: center;
-	padding-top: 8px;
 	font-size: x-large;
 	flex-basis: auto;
 	flex-grow: 0;
+}
+
+.spikes-col .lane-row > div.lane-number {
+	min-height: 55px;
+	height: auto;
+}
+
+.lane-row > div.lane-number > span {
+	position: relative;
+	top: 50%;
+	transform: translateY(-50%);
+	padding: 0;
+	display: block;
 }
 
 .lane-row > div.placeholder {
@@ -121,13 +180,34 @@ tr.PE100 {
 	flex-grow: 1;
 }
 
-.lane-row > div.placeholder.placeholder-spike {
-	margin-left: 10px;
-	width: calc(50% - 10px);
-	border-style: dotted;
+.lane-row > div.spikes-container {
+	width: calc(50% - 61px);
+	flex-basis: auto;
+	flex-grow: 1;
 	height: auto;
+	min-height: 55px;
+	margin-bottom: 5px;
+	border-radius: 10px;
+	border: 2px dotted lightgray;
+	display: flex;
+	flex-wrap: wrap;
 }
 
-.placeholder-spike .spike-pool:last-child {
-	margin-bottom: 0;
+.lane-row > div.spikes-container > .spike-pool {
+	width: calc(50% - 2.5px);
+	margin: 0;
+	margin-bottom: 5px;
+}
+
+.lane-row > div.spikes-container > .spike-pool:nth-child(odd) {
+	margin-right: 2.5px;
+}
+
+.lane-row > div.spikes-container > .spike-pool:nth-child(even) {
+	margin-left: 2.5px;
+}
+
+.lane-row > div.spikes-container > .spike-pool:last-child,
+.lane-row > div.spikes-container > .spike-pool:nth-last-child(2) {
+	margin-bottom: 0px;
 }

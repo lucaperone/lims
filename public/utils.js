@@ -78,11 +78,11 @@ function displayIndexData(data) {
 	pools.forEach((pool) => {
 		let spike = ""
 		if (pool.multiplex === -1) {
-			spike = " class='spike'"
+			spike = "spike"
 		}
 		html_string += `
-			<tr class="${pool.run}${pool.read}">
-				<td${spike}>${pool.group}</td>
+			<tr class="${pool.run}${pool.read} ${spike}">
+				<td>${pool.group}</td>
 				<td>${pool.lab} (${pool.submitter})</td>
 				<td>${pool.libraries.length}</td>
 				<td>${pool.protocol}</td>
@@ -119,7 +119,9 @@ function displayCreateData(data) {
 					data-group="${pool.group}"
                     data-runtype="${pool.run}${pool.read}">
                         <span>${pool.group}</span>
-                        <span>${pool.run} ${pool.read}</span>
+                        <span class="pool-runtype">${pool.run} ${
+				pool.read
+			}</span>
                         <span>${pool.ready ? "✔️" : "❌"}</span>
                 </div>
 		    `

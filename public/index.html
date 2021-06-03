@@ -47,14 +47,16 @@
 						class="alert alert-danger d-none mb-3"
 						role="alert"
 					></div>
-					<button id="load" class="btn btn-primary mb-3 me-3">
-						Load pools
-					</button>
-					<div class="loader d-none"></div>
-					<div class="cache text-muted d-inline-block">
-						Last time: never
+					<div class="d-flex align-items-center mb-4">
+						<button id="load" class="btn btn-primary me-3">
+							Load pools
+						</button>
+						<div class="loader d-none"></div>
+						<div class="cache text-muted d-inline-block">
+							Last time: never
+						</div>
 					</div>
-					<table id="pools" class="table table-striped table-sm">
+					<table id="pools" class="table table-striped">
 						<thead>
 							<th scope="col">Pool</th>
 							<th scope="col">Laboratory</th>
@@ -102,6 +104,14 @@
 							value="true"
 						/>
 						<label for="PE100">Paired-end Reads 100</label><br />
+						<input
+							class="me-2"
+							type="checkbox"
+							id="spike"
+							name="spike"
+							value="true"
+						/>
+						<label for="spike">Spikes</label><br />
 
 						<input
 							class="btn btn-primary mt-3"
