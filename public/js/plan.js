@@ -62,9 +62,78 @@ function placePools() {
 	updateState()
 }
 
+function spiked() {
+	const url = new URL(window.location.href)
+	return !!url.searchParams.get("spike")
+}
+
+function generatePlanners() {
+	const filter = getFilter()
+	const requestedRuns = Object.keys(filter).filter(
+		(runtype) => filter[runtype]
+	)
+	for (const runtype of requestedRuns) {
+		let run_width = "6"
+		let col_width = "12"
+		if (spiked()) {
+			run_width = "12"
+			col_width = "6"
+		}
+
+		$("#runs .row").append(
+			`<div id="${runtype}" class="row col-${run_width}"></div>`
+		)
+
+		$(`#runs #${runtype}`).append(`
+			<div id="${runtype}-pools" class="col-${col_width} pools-col">
+				<h4 class="text-center mb-3">${idToTitle[runtype]}</h4>
+				<div class="run-container">
+					<div class="run-ui"></div>
+					<div class="run-plan" data-runtype="${runtype}"></div>
+				</div>
+			</div>
+		`)
+
+		if (spiked()) {
+			$("#spikes-title, #spikes").removeClass("d-none")
+			$(`#runs #${runtype}`).addClass("spiked")
+			$(`#runs #${runtype}`).append(`
+			<div id="${runtype}-spikes" class="col-6 spikes-col">
+			<h4 class="text-center mb-3">${runtype} Spikes</h4>
+			<div class="run-container" data-runtype="${runtype}">
+					</div>
+				</div>
+			`)
+		}
+
+		$(`#runs #${runtype}`).append(
+			`<div class="col-12 text-center"><button id="export-${runtype}" class="btn btn-primary w-100">Export run</div>`
+		)
+		$(`#export-${runtype}`).click((_) => exportRun(runtype))
+
+		for (let lane = 1; lane <= 8; lane++) {
+			$(`#${runtype} .run-ui`).append(`
+				<div class="lane-row lane-${lane}">
+					<div class="lane-number"><span>${lane}</span></div>
+					<div class="placeholder"></div>
+				</div>
+			`)
+
+			if (spiked()) {
+				$(`#${runtype}-spikes .run-container`).append(`
+					<div class="lane-row lane-${lane}">
+						<div class="lane-number"><span>${lane}</span></div>
+						<div class="spikes-container"></div>
+					</div>
+				`)
+			}
+		}
+	}
+}
+
 function updateState() {
 	for (const runtype of Object.keys(state)) {
-		state[runtype] = $(`#${runtype} .run-plan`).sortable("toArray")
+		state[runtype] = $(`#${runtype}-pools .run-plan`).sortable("toArray")
 	}
 }
 
@@ -81,7 +150,7 @@ function idsToSizes(ids) {
 
 function shouldCancel(pool_type, target_type) {
 	if (compatibility_table[pool_type][target_type]) {
-		const next_local_state = $(`#${target_type} .run-plan`).sortable(
+		const next_local_state = $(`#${target_type}-pools .run-plan`).sortable(
 			"toArray"
 		)
 		const sizes = idsToSizes(next_local_state)
@@ -106,57 +175,25 @@ function shouldCancel(pool_type, target_type) {
 	return false
 }
 
-function spiked() {
-	const url = new URL(window.location.href)
-	return !!url.searchParams.get("spike")
+function exportRun(runtype) {
+	localStorage.setItem(
+		`${runtype}-export`,
+		state[runtype].map((poolID) => idToGroup(poolID))
+	)
+	const spikes = new Array()
+	for (let lane = 1; lane <= 8; lane++) {
+		spikes.push(
+			$(`#${runtype}-spikes .lane-${lane} .spikes-container`)
+				.sortable("toArray")
+				.map((spikeID) => idToGroup(spikeID))
+		)
+	}
+	localStorage.setItem(`${runtype}-spikes`, JSON.stringify(spikes))
+	window.open(`/export.html?runtype=${runtype}`)
 }
 
-function generatePlanners() {
-	const filter = getFilter()
-	const requestedRuns = Object.keys(filter).filter(
-		(runtype) => filter[runtype]
-	)
-	for (const runtype of requestedRuns) {
-		$("#runs .row").append(`
-			<div id="${runtype}" class="col-6 pools-col">
-				<h4 class="text-center mb-3">${idToTitle[runtype]}</h4>
-				<div class="run-container">
-					<div class="run-ui"></div>
-					<div class="run-plan" data-runtype="${runtype}"></div>
-				</div>
-			</div>
-		`)
-
-		if (spiked()) {
-			$("#spikes-title, #spikes").removeClass("d-none")
-			$("#runs .row").addClass("spiked")
-			$("#runs .row").append(`
-				<div id="${runtype}-spikes" class="col-6 spikes-col">
-					<h4 class="text-center mb-3">${runtype} Spikes</h4>
-					<div class="run-container" data-runtype="${runtype}">
-					</div>
-				</div>
-			`)
-		}
-
-		for (let lane = 1; lane <= 8; lane++) {
-			$(`#${runtype} .run-ui`).append(`
-				<div class="lane-row lane-${lane}">
-					<div class="lane-number"><span>${lane}</span></div>
-					<div class="placeholder"></div>
-				</div>
-			`)
-
-			if (spiked()) {
-				$(`#${runtype}-spikes .run-container`).append(`
-					<div class="lane-row lane-${lane}">
-						<div class="lane-number"><span>${lane}</span></div>
-						<div class="spikes-container"></div>
-					</div>
-				`)
-			}
-		}
-	}
+function idToGroup(id) {
+	return $(`#${id}`).data("group")
 }
 
 $(function () {
