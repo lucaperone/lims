@@ -43,7 +43,7 @@ const compatibility_table = {
 
 function loadData() {
 	$(".pool").remove()
-	getData("create")
+	getData("plan")
 }
 
 function placePools() {
@@ -59,11 +59,7 @@ function placePools() {
 			$(this).appendTo(run_plan)
 		}
 	})
-	const runtypes = ["SR50", "SR100", "PE50", "PE100"]
-	runtypes.forEach(
-		(runtype) =>
-			(state[runtype] = $(`#${runtype} .run-plan`).sortable("toArray"))
-	)
+	updateState()
 }
 
 function updateState() {
@@ -168,7 +164,7 @@ $(function () {
 	$("#auto").click((_) => placePools())
 	$("#reset").click((_) => location.reload())
 
-	welcome("create")
+	welcome("plan")
 	generatePlanners()
 
 	$(".run-plan").sortable({

@@ -10,7 +10,7 @@ export async function getData(page) {
 				if (page === "index") {
 					displayIndexData(response)
 				} else {
-					displayCreateData(response)
+					displayPlanData(response)
 				}
 			}
 		},
@@ -48,7 +48,7 @@ export function welcome(page) {
 			if (page === "index") {
 				displayIndexData(requests)
 			} else {
-				displayCreateData(requests)
+				displayPlanData(requests)
 			}
 		}
 	} else {
@@ -95,7 +95,7 @@ function displayIndexData(data) {
 	$("table#pools tbody").html(html_string)
 }
 
-function displayCreateData(data) {
+function displayPlanData(data) {
 	const { error, pools } = data
 	const filter = getFilter()
 
