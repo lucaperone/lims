@@ -208,5 +208,3 @@ module.exports = {
 		return await fetchData()
 	},
 }
-
-// fetchData()

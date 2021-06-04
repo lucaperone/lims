@@ -50,9 +50,19 @@
 				</div>
 			</div>
 		</div>
-        <div class="fluid-container pt-3 text-center">
-                <button class="btn btn-primary mx-2" id="pdf">Download as .PDF</button>
-                <button class="btn btn-primary mx-2" id="pdf">Download as .CSV</button>
+        <div class="fluid-container pt-3 text-center d-flex align-items-center justify-content-center">
+			<button class="btn btn-primary" id="pdf">Download as .PDF</button>
+			<button class="btn btn-primary mx-3" id="csv">Download as .CSV</button>
+			CSV separator :
+			<div id="sepRadio" class="ms-2 d-inline-block">
+
+				<input type="radio" name="separator" value="," id="sepComma" checked>
+				<label class="me-2 pe-3" for="sepComma">Comma " , "</label>
+			
+				<input type="radio" name="separator" value=";" id="sepSemicolon">
+				<label for="sepSemicolon">Semicolon " ; "</label>
+				
+			</div>
         </div>
 
 		<script

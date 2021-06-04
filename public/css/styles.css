@@ -3,6 +3,13 @@ body {
 	font-weight: 400;
 }
 
+input[type="checkbox"]:hover,
+input[type="radio"]:hover,
+input[type="checkbox"] + label:hover,
+input[type="radio"] + label:hover {
+	cursor: pointer;
+}
+
 #home {
 	position: fixed;
 	top: 7px;
