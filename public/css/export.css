@@ -1,0 +1,57 @@
+.pool {
+	height: 85px;
+	padding: 5px 0;
+}
+
+.pool div {
+	display: flex;
+	height: 100%;
+	border-right: 1px solid rgba(0, 0, 0, 0.1);
+	flex-grow: 0;
+	padding: 0px 10px;
+	align-items: center;
+	font-size: 14px;
+}
+
+.pool div:first-child {
+	padding-left: 15px;
+}
+
+.pool div:nth-child(2) {
+	flex-grow: 1;
+}
+
+.pool div:last-child {
+	border: none;
+}
+
+.run-container {
+	min-height: 720px;
+	margin-bottom: 0px;
+}
+
+.pools-col .run-container {
+	height: 720px;
+}
+
+.lane-row > div.lane-number {
+	height: 85px;
+}
+
+.lane-row > div.placeholder {
+	height: 85px;
+}
+
+.lane-row > div.spikes-container {
+	min-height: 85px;
+	font-size: 11px;
+	padding: 5px;
+}
+
+.spikes-col .lane-number {
+	display: none;
+}
+
+.pool-libraries {
+	font-size: 11px;
+}

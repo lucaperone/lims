@@ -102,7 +102,7 @@ function displayPlanData(data) {
 	let pools_html = ""
 	let spikes_html = ""
 	pools.forEach((pool) => {
-		if (filter[`${pool.run}${pool.read}`]) {
+		if (filter[`${pool.run}${pool.read}`] || pool.multiplex === -1) {
 			let spike = ""
 			let pool_height = ""
 			if (pool.multiplex === -1) {
@@ -144,4 +144,34 @@ export function getFilter() {
 		PE50: url.searchParams.get("pe50"),
 		PE100: url.searchParams.get("pe100"),
 	}
+}
+
+export function generateUI(runtype, spiked) {
+	for (let lane = 1; lane <= 8; lane++) {
+		$(`#${runtype}-pools .run-ui`).append(`
+			<div class="lane-row lane-${lane}">
+				<div class="lane-number"><span>${lane}</span></div>
+				<div class="placeholder"></div>
+			</div>
+		`)
+
+		if (spiked) {
+			$(`#${runtype}-spikes .run-container`).append(`
+				<div class="lane-row lane-${lane}">
+					<div class="lane-number"><span>${lane}</span></div>
+					<div class="spikes-container"></div>
+				</div>
+			`)
+		}
+	}
+}
+
+export function idToTitle(id) {
+	const table = {
+		SR50: "Single Read 50",
+		SR100: "Single Read 100",
+		PE50: "Paired-end Reads 50",
+		PE100: "Paired-end Reads 100",
+	}
+	return table[id]
 }

@@ -7,7 +7,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<title></title>
+		<title>LIMS - Export</title>
 		<meta name="description" content="" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -25,7 +25,7 @@
 
 		<link rel="stylesheet" href="css/jquery-ui.min.css" />
 		<link rel="stylesheet" href="css/styles.css" />
-		<link rel="stylesheet" href="css/loader.css" />
+		<link rel="stylesheet" href="css/export.css" />
 	</head>
 	<body>
 		<!--[if lt IE 7]>
@@ -35,7 +35,25 @@
 			</p>
 		<![endif]-->
 
-		<div class="fluid-container pt-3 p-5"></div>
+		<div class="fluid-container pt-3 px-3" id="export">
+			<h3 id="title" class="d-inline-block"></h1>
+            <h3 id="spikes-title" class="d-inline-block d-none float-end">Spikes</h3>
+			<div class="row">
+				<div class="col pools-col">
+					<div class="run-container">
+						<div class="run-ui"></div>
+						<div class="run-plan"></div>
+					</div>
+				</div>
+				<div class="col-3 spikes-col">
+					<div class="run-container"></div>
+				</div>
+			</div>
+		</div>
+        <div class="fluid-container pt-3 text-center">
+                <button class="btn btn-primary mx-2" id="pdf">Download as .PDF</button>
+                <button class="btn btn-primary mx-2" id="pdf">Download as .CSV</button>
+        </div>
 
 		<script
 			src="https://code.jquery.com/jquery-3.6.0.js"
@@ -47,7 +65,8 @@
 			integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
 			crossorigin="anonymous"
 		></script>
-		<script src="js/export.js" type="module" async defer></script>
-		<script src="js/jquery-ui.min.js" -async defer></script>
+		<script src="js/html2pdf.bundle.min.js" defer></script>
+		<script src="js/jquery-ui.min.js" defer></script>
+		<script src="js/export.js" type="module" defer></script>
 	</body>
 </html>

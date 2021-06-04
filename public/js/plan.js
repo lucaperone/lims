@@ -1,17 +1,10 @@
-import { welcome, getData, getFilter } from "./utils.js"
+import { welcome, getData, getFilter, generateUI, idToTitle } from "./utils.js"
 
 const state = {
 	SR50: [],
 	SR100: [],
 	PE50: [],
 	PE100: [],
-}
-
-const idToTitle = {
-	SR50: "Single Read 50",
-	SR100: "Single Read 100",
-	PE50: "Paired-end Reads 50",
-	PE100: "Paired-end Reads 100",
 }
 
 const compatibility_table = {
@@ -80,13 +73,13 @@ function generatePlanners() {
 			col_width = "6"
 		}
 
-		$("#runs .row").append(
-			`<div id="${runtype}" class="row col-${run_width}"></div>`
+		$("#runs > .row").append(
+			`<div id="${runtype}" class="row col-${run_width} mb-5"></div>`
 		)
 
 		$(`#runs #${runtype}`).append(`
 			<div id="${runtype}-pools" class="col-${col_width} pools-col">
-				<h4 class="text-center mb-3">${idToTitle[runtype]}</h4>
+				<h4 class="text-center mb-3">${idToTitle(runtype)}</h4>
 				<div class="run-container">
 					<div class="run-ui"></div>
 					<div class="run-plan" data-runtype="${runtype}"></div>
@@ -98,36 +91,20 @@ function generatePlanners() {
 			$("#spikes-title, #spikes").removeClass("d-none")
 			$(`#runs #${runtype}`).addClass("spiked")
 			$(`#runs #${runtype}`).append(`
-			<div id="${runtype}-spikes" class="col-6 spikes-col">
-			<h4 class="text-center mb-3">${runtype} Spikes</h4>
-			<div class="run-container" data-runtype="${runtype}">
+				<div id="${runtype}-spikes" class="col-6 spikes-col">
+					<h4 class="text-center mb-3">${runtype} Spikes</h4>
+					<div class="run-container" data-runtype="${runtype}">
 					</div>
 				</div>
 			`)
 		}
 
 		$(`#runs #${runtype}`).append(
-			`<div class="col-12 text-center"><button id="export-${runtype}" class="btn btn-primary w-100">Export run</div>`
+			`<div class="col-12 text-center"><button id="export-${runtype}" class="btn btn-primary w-100">Export run</button></div>`
 		)
 		$(`#export-${runtype}`).click((_) => exportRun(runtype))
 
-		for (let lane = 1; lane <= 8; lane++) {
-			$(`#${runtype} .run-ui`).append(`
-				<div class="lane-row lane-${lane}">
-					<div class="lane-number"><span>${lane}</span></div>
-					<div class="placeholder"></div>
-				</div>
-			`)
-
-			if (spiked()) {
-				$(`#${runtype}-spikes .run-container`).append(`
-					<div class="lane-row lane-${lane}">
-						<div class="lane-number"><span>${lane}</span></div>
-						<div class="spikes-container"></div>
-					</div>
-				`)
-			}
-		}
+		generateUI(runtype, spiked())
 	}
 }
 
@@ -180,15 +157,22 @@ function exportRun(runtype) {
 		`${runtype}-export`,
 		state[runtype].map((poolID) => idToGroup(poolID))
 	)
-	const spikes = new Array()
-	for (let lane = 1; lane <= 8; lane++) {
-		spikes.push(
-			$(`#${runtype}-spikes .lane-${lane} .spikes-container`)
-				.sortable("toArray")
-				.map((spikeID) => idToGroup(spikeID))
-		)
+
+	if (spiked()) {
+		const spikes = new Array()
+		for (let lane = 1; lane <= 8; lane++) {
+			spikes.push(
+				$(`#${runtype}-spikes .lane-${lane} .spikes-container`)
+					.sortable("toArray")
+					.map((spikeID) => idToGroup(spikeID))
+			)
+		}
+		localStorage.setItem("spiked", true)
+		localStorage.setItem(`${runtype}-spikes`, JSON.stringify(spikes))
+	} else {
+		localStorage.setItem("spiked", false)
 	}
-	localStorage.setItem(`${runtype}-spikes`, JSON.stringify(spikes))
+
 	window.open(`/export.html?runtype=${runtype}`)
 }
 
