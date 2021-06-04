@@ -48,7 +48,7 @@ async function fetchData() {
 			multiplex
 		)
 
-		if (pool.error != "") {
+		if (pool.error != undefined) {
 			return { error: pool.error }
 		}
 
@@ -150,7 +150,6 @@ function parseAndMergeRequests(requests, multiplex) {
 	}
 
 	return {
-		error: "",
 		libraries: groupLibraries(requests),
 		lab: requests[0][2],
 		protocol: requests[0][3],
