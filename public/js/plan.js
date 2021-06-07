@@ -48,7 +48,11 @@ function loadData() {
 
 function placePools(runtype) {
 	var { error, pools } = JSON.parse(localStorage.getItem("lims-requests"))
-	pools = pools.filter((pool) => pool.run + pool.read === runtype).reverse()
+	pools = pools
+		.filter(
+			(pool) => pool.run + pool.read === runtype && pool.multiplex > 0
+		)
+		.reverse()
 
 	const formatted_pools = formatPools(pools)
 
@@ -74,7 +78,7 @@ function formatPools(pools) {
 		var size = pool.lanes
 
 		if (pool.lanes === 0.5 || isFirstHalf) {
-			const next_half = findNextHalf(pools.slice(pools.indexOf(pool)))
+			const next_half = findNextHalf(pools.slice(pools.indexOf(pool)) + 1)
 			if (next_half === null) continue
 			ids.push(groupToID(next_half.group))
 			size = 1
