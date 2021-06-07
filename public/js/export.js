@@ -48,6 +48,7 @@ function generateSpikes(spikes) {
 			spikes[lane - 1].join(", ")
 		)
 	}
+	console.log("hihi")
 }
 
 function exportAsPDF() {
@@ -101,10 +102,8 @@ function exportAsCSV(pools, spiked, spikes) {
 		}
 		if (pool.lanes === 0.5 && isFirstHalf) {
 			lane--
-			isFirstHalf = false
-		} else if (pool.lanes === 0.5 || !isFirstHalf) {
-			isFirstHalf = true
 		}
+		isFirstHalf = pool.lanes === 0.5 ? !isFirstHalf : isFirstHalf
 	}
 
 	for (let empty_lane = lane; empty_lane <= 8; empty_lane++) {
@@ -153,7 +152,7 @@ function generateFilename() {
 }
 
 $(function () {
-	const spiked = localStorage.getItem("spiked")
+	const spiked = localStorage.getItem("spiked") === "true"
 	const pools = formatPools()
 	var spikes = []
 
@@ -167,6 +166,7 @@ $(function () {
 	if (spiked) {
 		$("#export > .row").addClass("spiked")
 		$("#spikes-title").removeClass("d-none")
+		$(".spikes-col").removeClass("d-none")
 		spikes = JSON.parse(localStorage.getItem(`${runtype}-spikes`))
 		generateSpikes(spikes)
 	}
