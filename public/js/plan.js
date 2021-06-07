@@ -100,7 +100,11 @@ function generatePlanners() {
 		}
 
 		$(`#runs #${runtype}`).append(
-			`<div class="col-12 text-center"><button id="export-${runtype}" class="btn btn-primary w-100">Export run</button></div>`
+			`<div class="col-12 text-center d-flex justify-content-between">
+				<button id="export-${runtype}" class="btn btn-primary run-btn">Export run</button>
+				<button id="auto-${runtype}" class="btn btn-success run-btn">Place pools</button>
+				<button id="reset-${runtype}" class="btn btn-danger run-btn">Reset</button>
+			</div>`
 		)
 		$(`#export-${runtype}`).click((_) => exportRun(runtype))
 
@@ -182,8 +186,8 @@ function idToGroup(id) {
 
 $(function () {
 	$("#load").click((_) => loadData())
-	$("#auto").click((_) => placePools())
-	$("#reset").click((_) => location.reload())
+	// $("#auto").click((_) => placePools())
+	// $("#reset").click((_) => location.reload())
 
 	welcome("plan")
 	generatePlanners()

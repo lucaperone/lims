@@ -243,3 +243,7 @@ tr.spike {
 .lane-row > div.spikes-container > .spike-pool:nth-last-child(2) {
 	margin-bottom: 0px;
 }
+
+.run-btn {
+	flex-basis: 32%;
+}
