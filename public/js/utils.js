@@ -112,7 +112,7 @@ function displayPlanData(data) {
 			}
 			const temp_html = `
                 <div
-                    id="${pool.group.replaceAll(/\W/g, "")}"
+                    id="${groupToID(pool.group)}"
                     class="pool ${pool.run}${pool.read} ${spike}"
                     ${pool_height}
                     data-size="${pool.lanes}"
@@ -144,6 +144,10 @@ export function getFilter() {
 		PE50: url.searchParams.get("pe50"),
 		PE100: url.searchParams.get("pe100"),
 	}
+}
+
+export function groupToID(group) {
+	return group.replaceAll(/\W/g, "")
 }
 
 export function generateUI(runtype, spiked) {

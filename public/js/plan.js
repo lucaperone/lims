@@ -1,4 +1,11 @@
-import { welcome, getData, getFilter, generateUI, idToTitle } from "./utils.js"
+import {
+	welcome,
+	getData,
+	getFilter,
+	generateUI,
+	idToTitle,
+	groupToID,
+} from "./utils.js"
 
 const state = {
 	SR50: [],
@@ -39,20 +46,90 @@ function loadData() {
 	getData("plan")
 }
 
-function placePools() {
-	$($(".pool:not(.spike-pool)").get().reverse()).each(function () {
-		const run_plan = `#${$(this).data("runtype")} .run-plan`
-		const pool_size = $(this).data("size")
-		const current_size = idsToSizes($(run_plan).sortable("toArray")).reduce(
-			(a, b) => a + b,
-			0
-		)
+function placePools(runtype) {
+	var { error, pools } = JSON.parse(localStorage.getItem("lims-requests"))
+	pools = pools.filter((pool) => pool.run + pool.read === runtype).reverse()
 
-		if (current_size + pool_size <= 8 && pool_size % 1 == 0) {
-			$(this).appendTo(run_plan)
+	const formatted_pools = formatPools(pools)
+
+	const plan = recursivePlacement(
+		formatted_pools[0],
+		formatted_pools.slice(1),
+		[]
+	)
+	for (const pool of plan) {
+		for (const id of pool.ids) {
+			$(`#${id}`).appendTo(`#${runtype} .run-plan`)
 		}
-	})
+	}
 	updateState()
+}
+
+function formatPools(pools) {
+	const formatted_pools = new Array()
+
+	var isFirstHalf = false
+	for (const pool of pools) {
+		var ids = [groupToID(pool.group)]
+		var size = pool.lanes
+
+		if (pool.lanes === 0.5 || isFirstHalf) {
+			const next_half = findNextHalf(pools.slice(pools.indexOf(pool)))
+			if (next_half === null) continue
+			ids.push(groupToID(next_half.group))
+			size = 1
+		}
+		isFirstHalf = pool.lanes === 0.5 ? !isFirstHalf : isFirstHalf
+
+		formatted_pools.push({
+			ids: ids,
+			size: size,
+		})
+	}
+	return formatted_pools
+}
+
+function findNextHalf(pools) {
+	for (const pool of pools) {
+		if (pool.lanes === 0.5) {
+			return pool
+		}
+	}
+	return null
+}
+
+function recursivePlacement(pool, pools, plan) {
+	const new_plan = plan.slice()
+	new_plan.push(pool)
+	const new_plan_size = planSize(new_plan)
+
+	if (new_plan_size > 8) {
+		return plan
+	}
+
+	if (pools.length === 0 || new_plan_size === 8) {
+		return new_plan
+	}
+
+	var max = new_plan_size
+	var best_plan = new_plan
+	for (let i = 0; i < pools.length; i++) {
+		const next_plan = recursivePlacement(
+			pools[i],
+			pools.slice(i + 1),
+			new_plan
+		)
+		const next_plan_size = planSize(next_plan)
+		if (next_plan_size > max) {
+			best_plan = next_plan
+			max = next_plan_size
+		}
+	}
+	return best_plan
+}
+
+function planSize(plan) {
+	return plan.reduce((lanes_used, pool) => lanes_used + pool.size, 0)
 }
 
 function spiked() {
@@ -107,6 +184,8 @@ function generatePlanners() {
 			</div>`
 		)
 		$(`#export-${runtype}`).click((_) => exportRun(runtype))
+		$(`#auto-${runtype}`).click((_) => placePools(runtype))
+		$(`#reset-${runtype}`).click((_) => resetRun(runtype))
 
 		generateUI(runtype, spiked())
 	}
@@ -186,8 +265,6 @@ function idToGroup(id) {
 
 $(function () {
 	$("#load").click((_) => loadData())
-	// $("#auto").click((_) => placePools())
-	// $("#reset").click((_) => location.reload())
 
 	welcome("plan")
 	generatePlanners()
