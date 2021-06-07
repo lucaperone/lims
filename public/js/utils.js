@@ -101,14 +101,17 @@ function displayPlanData(data) {
 
 	let pools_html = ""
 	let spikes_html = ""
+	let order = 1
 	pools.forEach((pool) => {
 		if (filter[`${pool.run}${pool.read}`] || pool.multiplex === -1) {
 			let spike = ""
 			let pool_height = ""
+			let data_order = ""
 			if (pool.multiplex === -1) {
 				spike = "spike-pool"
 			} else {
 				pool_height = `style = "height: calc(${pool.lanes} * 60px - 5px)"`
+				data_order = `data-order="${order++}"`
 			}
 			const temp_html = `
                 <div
@@ -117,7 +120,8 @@ function displayPlanData(data) {
                     ${pool_height}
                     data-size="${pool.lanes}"
 					data-group="${pool.group}"
-                    data-runtype="${pool.run}${pool.read}">
+                    data-runtype="${pool.run}${pool.read}"
+					${data_order}>
                         <span>${pool.group}</span>
                         <span class="pool-runtype">${pool.run} ${
 				pool.read

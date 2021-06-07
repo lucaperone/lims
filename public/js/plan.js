@@ -136,6 +136,15 @@ function planSize(plan) {
 	return plan.reduce((lanes_used, pool) => lanes_used + pool.size, 0)
 }
 
+function resetRun(runtype) {
+	$(`#${runtype}-pools .run-plan .pool`).appendTo("#pools")
+	const pools = $("#pools .pool")
+		.detach()
+		.sort((a, b) => $(a).data("order") - $(b).data("order"))
+
+	$("#pools").append(pools)
+}
+
 function spiked() {
 	const url = new URL(window.location.href)
 	return !!url.searchParams.get("spike")
