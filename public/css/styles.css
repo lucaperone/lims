@@ -38,6 +38,13 @@ table#pools td:nth-child(5) {
 	word-wrap: normal;
 }
 
+table#pools td:nth-child(6),
+table#pools th:nth-child(6),
+table#pools td:nth-child(7),
+table#pools th:nth-child(7) {
+	text-align: center;
+}
+
 #spikes {
 	display: flex;
 	flex-wrap: wrap;
