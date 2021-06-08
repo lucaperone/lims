@@ -107,11 +107,13 @@ function displayPlanData(data) {
 			let spike = ""
 			let pool_height = ""
 			let data_order = ""
+			let lab = ""
 			if (pool.multiplex === -1) {
 				spike = "spike-pool"
 			} else {
 				pool_height = `style = "height: calc(${pool.lanes} * 60px - 5px)"`
 				data_order = `data-order="${order++}"`
+				lab = `<span class="pool-lab">${pool.lab}</span>`
 			}
 			// prettier-ignore
 			const temp_html = `
@@ -125,6 +127,7 @@ function displayPlanData(data) {
 					${data_order}>
 
 					<span>${pool.group}</span>
+					${lab}
 					<span class="pool-runtype">${pool.run} ${pool.read}</span>
 					<span>${pool.ready ? "✔️" : "❌"}</span>
                 </div>

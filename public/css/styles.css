@@ -114,7 +114,7 @@ tr.spike {
 
 .pool > span {
 	flex-grow: 0;
-	padding: 0px 25px;
+	padding: 0px 10px;
 }
 
 .pool > span:first-child {
@@ -125,6 +125,13 @@ tr.spike {
 
 .pool-runtype {
 	white-space: nowrap;
+}
+
+.pool-lab {
+	width: 10ch;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .spike-pool > span {
