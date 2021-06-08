@@ -139,6 +139,8 @@ function parseAndMergeRequests(requests, multiplex) {
 	const run_type = parseRun(requests[0][4])
 	if (run_type === "error") {
 		return error(requests[0][0], `Unkown run type "${requests[0][4]}"`)
+	} else if (run_type === "MiSeq") {
+		continue
 	}
 
 	const lanes = parseFloat(requests[0][6])
@@ -185,6 +187,8 @@ function parseRun(run) {
 			return "SR"
 		case "paired-end reads":
 			return "PE"
+		case "MiSeq paired-end reads":
+			return "MiSeq"
 		default:
 			return "error"
 	}
