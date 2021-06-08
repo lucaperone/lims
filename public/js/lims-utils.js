@@ -113,20 +113,20 @@ function displayPlanData(data) {
 				pool_height = `style = "height: calc(${pool.lanes} * 60px - 5px)"`
 				data_order = `data-order="${order++}"`
 			}
+			// prettier-ignore
 			const temp_html = `
                 <div
-                    id="${groupToID(pool.group)}"
-                    class="pool ${pool.run}${pool.read} ${spike}"
-                    ${pool_height}
-                    data-size="${pool.lanes}"
+					id="${groupToID(pool.group)}"
+					class="pool ${pool.run}${pool.read} ${spike}"
+					${pool_height}
+					data-size="${pool.lanes}"
 					data-group="${pool.group}"
-                    data-runtype="${pool.run}${pool.read}"
+					data-runtype="${pool.run}${pool.read}"
 					${data_order}>
-                        <span>${pool.group}</span>
-                        <span class="pool-runtype">${pool.run} ${
-				pool.read
-			}</span>
-                        <span>${pool.ready ? "✔️" : "❌"}</span>
+
+					<span>${pool.group}</span>
+					<span class="pool-runtype">${pool.run} ${pool.read}</span>
+					<span>${pool.ready ? "✔️" : "❌"}</span>
                 </div>
 		    `
 			if (pool.multiplex === -1) {
@@ -143,10 +143,10 @@ function displayPlanData(data) {
 export function getFilter() {
 	const url = new URL(window.location.href)
 	return {
-		SR50: url.searchParams.get("sr50"),
-		SR100: url.searchParams.get("sr100"),
-		PE50: url.searchParams.get("pe50"),
-		PE100: url.searchParams.get("pe100"),
+		SR50: !!url.searchParams.get("sr50"),
+		SR100: !!url.searchParams.get("sr100"),
+		PE50: !!url.searchParams.get("pe50"),
+		PE100: !!url.searchParams.get("pe100"),
 	}
 }
 

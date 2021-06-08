@@ -1,4 +1,4 @@
-import { generateUI, idToTitle } from "./utils.js"
+import { generateUI, idToTitle } from "./lims-utils.js"
 
 const url = new URL(window.location.href)
 const runtype = url.searchParams.get("runtype")

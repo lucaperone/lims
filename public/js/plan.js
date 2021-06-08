@@ -5,7 +5,7 @@ import {
 	generateUI,
 	idToTitle,
 	groupToID,
-} from "./utils.js"
+} from "./lims-utils.js"
 
 const state = {
 	SR50: [],
