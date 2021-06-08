@@ -77,6 +77,7 @@ function exportAsCSV(pools, spiked, spikes) {
 		"Lanes",
 		"Ready",
 		"Spikes",
+		"Comments",
 	])
 
 	var lane = 1
@@ -96,6 +97,7 @@ function exportAsCSV(pools, spiked, spikes) {
 				pool.lanes,
 				pool.ready,
 				`${spiked ? spikes[lane - 1] : ""}`,
+				"",
 			])
 			lane++
 		}
@@ -117,37 +119,36 @@ function exportAsCSV(pools, spiked, spikes) {
 			"",
 			"",
 			`${spiked ? spikes[empty_lane - 1] : ""}`,
+			"",
 		])
 	}
 
+	// prettier-ignore
 	const csvContent =
-		`data:text/csv;charset=utf-8;` +
-		data
-			.map((row) => {
-				return row
-					.map((cell) => {
-						var string = cell.toString()
-						string.replace(/"/g, '""')
-						if (string.search(/("|,|\n)/g) >= 0)
-							string = `"${string}"`
-						return string
-					})
-					.join($('input[name="separator"]:checked').val())
-			})
-			.join("\n")
+		`data:text/csv;charset=utf-8,` +
+		data.map((row) => {return row.map((cell) => {
+
+				var string = cell.toString()
+				string.replace(/"/g, '""')
+				if (string.search(/("|,|\n)/g) >= 0)
+					string = `"${string}"`
+				return string
+
+			}).join($('input[name="separator"]:checked').val())
+		}).join("\n")
 
 	const encodedUri = encodeURI(csvContent)
 	const link = document.createElement("a")
 	link.setAttribute("href", encodedUri)
-	link.setAttribute("download", `${generateFilename()}.csv`)
+	link.setAttribute("download", `${generateFilename(new Date())}.csv`)
 	document.body.appendChild(link) // Required for FF
 	link.click()
 }
 
 function generateFilename(date) {
 	// prettier-ignore
-	const formattedDate = `
-		${date.getFullYear()}${
+	const formattedDate = `${
+		date.getFullYear()}${
 		date.getMonth() + 1}${
 		date.getDate()}${
 		date.getHours()}${
