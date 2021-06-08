@@ -48,10 +48,9 @@ function loadData() {
 
 function placePools(runtype) {
 	var { error, pools } = JSON.parse(localStorage.getItem("lims-requests"))
+	// prettier-ignore
 	pools = pools
-		.filter(
-			(pool) => pool.run + pool.read === runtype && pool.multiplex > 0
-		)
+		.filter(pool => pool.run + pool.read === runtype && pool.multiplex > 0)
 		.reverse()
 
 	const formatted_pools = formatPools(pools)
@@ -183,8 +182,7 @@ function generatePlanners() {
 			$(`#runs #${runtype}`).append(`
 				<div id="${runtype}-spikes" class="col-6 spikes-col">
 					<h4 class="text-center mb-3">${runtype} Spikes</h4>
-					<div class="run-container" data-runtype="${runtype}">
-					</div>
+					<div class="run-container" data-runtype="${runtype}"></div>
 				</div>
 			`)
 		}
@@ -223,9 +221,7 @@ function idsToSizes(ids) {
 
 function shouldCancel(pool_type, target_type) {
 	if (compatibility_table[pool_type][target_type]) {
-		const next_local_state = $(`#${target_type}-pools .run-plan`).sortable(
-			"toArray"
-		)
+		const next_local_state = $(`#${target_type}-pools .run-plan`).sortable("toArray") // prettier-ignore
 		const sizes = idsToSizes(next_local_state)
 
 		if (sizes.reduce((a, b) => a + b, 0) > 8) {
