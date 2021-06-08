@@ -1,6 +1,7 @@
 .pool {
 	height: 85px;
 	padding: 5px 0;
+	cursor: unset;
 }
 
 .pool div {
