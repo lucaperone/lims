@@ -143,6 +143,8 @@ function parseAndMergeRequests(requests, multiplex) {
 		continue
 	}
 
+	var read_length = requests[0][5] === "2890" ? "100" : requests[0][5]
+
 	const lanes = parseFloat(requests[0][6])
 	if (isNaN(lanes)) {
 		return error(
@@ -156,7 +158,7 @@ function parseAndMergeRequests(requests, multiplex) {
 		lab: requests[0][2],
 		protocol: requests[0][3],
 		run: run_type,
-		read: requests[0][5],
+		read: read_length,
 		lanes: lanes,
 		multiplex: multiplex,
 		group: requests[0][8],
