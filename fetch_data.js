@@ -18,7 +18,6 @@ async function fetchData() {
 	for (let i = 0; i < requests.length; i++) {
 		const pool_name = requests[i][8]
 		if (pool_name === "") {
-			continue // TO REMOVE : only for testing
 			return error(requests[i][0], "No group name")
 		}
 
@@ -67,11 +66,6 @@ async function fetchData() {
 }
 
 async function webScrapper() {
-	results = {
-		libraries: [],
-		requests: [],
-	}
-
 	const browser = await puppeteer.launch()
 	const page = await browser.newPage()
 	await page.goto(login_url)
@@ -93,18 +87,19 @@ async function webScrapper() {
 	// Open the page as a logged-in user
 	await new_page.goto(libraries_url)
 
-	results.libraries = await new_page.$$eval(
+	const libraries = await new_page.$$eval(
 		"table.sortable tbody tr td:nth-child(2)",
 		(names) => {
 			return Array.from(names, (name) => name.innerText)
 		}
 	)
+
 	console.log("Found " + results.libraries.length + " libraries\n")
 	console.log("Fetching requests...")
 
 	await new_page.goto(requests_url)
 
-	results.requests = await new_page.$$eval(
+	const requests = await new_page.$$eval(
 		"table.sortable tbody tr",
 		(rows) => {
 			return Array.from(rows, (row) => {
@@ -115,10 +110,14 @@ async function webScrapper() {
 	)
 
 	console.log("Found " + results.requests.length + " requests\n")
-
+	
+	await page.click("#StatusRight > a") // Log out
 	await browser.close()
 
-	return results
+	return {
+		libraries: libraries,
+		requests: requests,
+	}
 }
 
 function parseAndMergeRequests(requests, multiplex) {
