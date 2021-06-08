@@ -47,7 +47,7 @@ function loadData() {
 }
 
 function placePools(runtype) {
-	var { error, pools } = JSON.parse(localStorage.getItem("lims-requests"))
+	let { error, pools } = JSON.parse(localStorage.getItem("lims-requests"))
 	// prettier-ignore
 	pools = pools
 		.filter(pool => pool.run + pool.read === runtype && pool.multiplex > 0)
@@ -71,10 +71,10 @@ function placePools(runtype) {
 function formatPools(pools) {
 	const formatted_pools = new Array()
 
-	var isFirstHalf = false
+	let isFirstHalf = false
 	for (const pool of pools) {
-		var ids = [groupToID(pool.group)]
-		var size = pool.lanes
+		let ids = [groupToID(pool.group)]
+		let size = pool.lanes
 
 		if (pool.lanes === 0.5 || isFirstHalf) {
 			const next_half = findNextHalf(pools.slice(pools.indexOf(pool)) + 1)
@@ -114,8 +114,8 @@ function recursivePlacement(pool, pools, plan) {
 		return new_plan
 	}
 
-	var max = new_plan_size
-	var best_plan = new_plan
+	let max = new_plan_size
+	let best_plan = new_plan
 	for (let i = 0; i < pools.length; i++) {
 		const next_plan = recursivePlacement(
 			pools[i],

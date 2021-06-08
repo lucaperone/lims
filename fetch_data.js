@@ -142,7 +142,7 @@ function parseAndMergeRequests(requests, multiplex) {
 		continue
 	}
 
-	var read_length = requests[0][5] === "2890" ? "100" : requests[0][5]
+	let read_length = requests[0][5] === "2890" ? "100" : requests[0][5]
 
 	const lanes = parseFloat(requests[0][6])
 	if (isNaN(lanes)) {

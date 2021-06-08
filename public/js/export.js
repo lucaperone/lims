@@ -80,8 +80,8 @@ function exportAsCSV(pools, spiked, spikes) {
 		"Comments",
 	])
 
-	var lane = 1
-	var isFirstHalf = true
+	let lane = 1
+	let isFirstHalf = true
 
 	for (const pool of pools) {
 		const repeat = Math.ceil(pool.lanes)
@@ -128,7 +128,7 @@ function exportAsCSV(pools, spiked, spikes) {
 		`data:text/csv;charset=utf-8,` +
 		data.map((row) => {return row.map((cell) => {
 
-				var string = cell.toString()
+				let string = cell.toString()
 				string.replace(/"/g, '""')
 				if (string.search(/("|,|\n)/g) >= 0)
 					string = `"${string}"`
@@ -160,7 +160,7 @@ function generateFilename(date) {
 $(function () {
 	const spiked = localStorage.getItem("spiked") === "true"
 	const pools = formatPools()
-	var spikes = []
+	let spikes = []
 
 	$("#title").html(idToTitle(runtype))
 	$(".pools-col").attr("id", `${runtype}-pools`)
