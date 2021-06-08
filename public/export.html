@@ -36,8 +36,11 @@
 		<![endif]-->
 
 		<div class="fluid-container pt-3 px-3" id="export">
-			<h3 id="title" class="d-inline-block"></h1>
-            <h3 id="spikes-title" class="d-inline-block d-none float-end">Spikes</h3>
+			<h3 id="title" class="d-inline-block me-3"></h3>
+			<h5 id="date" class="d-inline-block"></h5>
+			<h3 id="spikes-title" class="d-inline-block d-none float-end">
+				Spikes
+			</h3>
 			<div class="row">
 				<div class="col pools-col">
 					<div class="run-container">
@@ -50,20 +53,40 @@
 				</div>
 			</div>
 		</div>
-        <div class="fluid-container pt-3 text-center d-flex align-items-center justify-content-center">
+		<div
+			class="
+				fluid-container
+				pt-3
+				text-center
+				d-flex
+				align-items-center
+				justify-content-center
+			"
+		>
 			<button class="btn btn-primary" id="pdf">Download as .PDF</button>
-			<button class="btn btn-primary mx-3" id="csv">Download as .CSV</button>
+			<button class="btn btn-primary mx-3" id="csv">
+				Download as .CSV
+			</button>
 			CSV separator :
 			<div id="sepRadio" class="ms-2 d-inline-block">
-
-				<input type="radio" name="separator" value="," id="sepComma" checked>
+				<input
+					type="radio"
+					name="separator"
+					value=","
+					id="sepComma"
+					checked
+				/>
 				<label class="me-2 pe-3" for="sepComma">Comma " , "</label>
-			
-				<input type="radio" name="separator" value=";" id="sepSemicolon">
+
+				<input
+					type="radio"
+					name="separator"
+					value=";"
+					id="sepSemicolon"
+				/>
 				<label for="sepSemicolon">Semicolon " ; "</label>
-				
 			</div>
-        </div>
+		</div>
 
 		<script
 			src="https://code.jquery.com/jquery-3.6.0.js"

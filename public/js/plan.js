@@ -196,9 +196,9 @@ function generatePlanners() {
 				<button id="reset-${runtype}" class="btn btn-danger run-btn">Reset</button>
 			</div>`
 		)
-		$(`#export-${runtype}`).click((_) => exportRun(runtype))
-		$(`#auto-${runtype}`).click((_) => placePools(runtype))
-		$(`#reset-${runtype}`).click((_) => resetRun(runtype))
+		$(`#export-${runtype}`).click(() => exportRun(runtype))
+		$(`#auto-${runtype}`).click(() => placePools(runtype))
+		$(`#reset-${runtype}`).click(() => resetRun(runtype))
 
 		generateUI(runtype, spiked())
 	}
@@ -277,7 +277,7 @@ function idToGroup(id) {
 }
 
 $(function () {
-	$("#load").click((_) => loadData())
+	$("#load").click(() => loadData())
 
 	welcome("plan")
 	generatePlanners()

@@ -17,27 +17,19 @@ function formatPools() {
 function generatePools(pools) {
 	for (const pool of pools) {
 		const libraries = pool.libraries.join(", ")
+		// prettier-ignore
 		$(`#${runtype}-pools .run-plan`).append(
-			`
-                <div
-                    class="pool ${pool.run}${pool.read}"
-                    style = "height: calc(${pool.lanes} * 90px - 5px)">
-                        <div><span>${pool.group}</span></div>
-                        <div><span class="pool-libraries"><b>${
-							pool.libraries.length
-						} samples:</b> ${libraries}</span></div>
-                        <div><span class="text-center">${pool.lab}<br />(${
-				pool.submitter
-			})</span></div>
-                        <div><span class="text-center">${
-							pool.protocol
-						}</span></div>
-                        <div><span class="pool-runtype">${pool.run} ${
-				pool.read
-			}</span></div>
-                        <div><span>${pool.ready ? "✔️" : "❌"}</span></div>
-                </div>
-		    `
+			`<div
+				class="pool ${pool.run}${pool.read}"
+				style = "height: calc(${pool.lanes} * 90px - 5px)">
+				
+				<div><span>${pool.group}</span></div>
+				<div><span class="pool-libraries"><b>${pool.libraries.length} samples:</b> ${libraries}</span></div>
+				<div><span class="text-center">${pool.lab}<br />(${pool.submitter})</span></div>
+				<div><span class="text-center">${pool.protocol}</span></div>
+				<div><span class="pool-runtype">${pool.run} ${pool.read}</span></div>
+				<div><span>${pool.ready ? "✔️" : "❌"}</span></div>
+			</div>`
 		)
 	}
 }
@@ -48,13 +40,14 @@ function generateSpikes(spikes) {
 			spikes[lane - 1].join(", ")
 		)
 	}
-	console.log("hihi")
 }
 
 function exportAsPDF() {
 	const element = document.getElementById("export")
+	const now = new Date()
+
 	const options = {
-		filename: generateFilename(),
+		filename: generateFilename(now),
 		jsPDF: {
 			orientation: "landscape",
 			unit: "mm",
@@ -62,7 +55,13 @@ function exportAsPDF() {
 			putOnlyUsedFonts: true,
 		},
 	}
-	html2pdf().set(options).from(element).save()
+
+	$("#date").html(now.toLocaleString("fr-CH"))
+	html2pdf()
+		.set(options)
+		.from(element)
+		.save()
+		.then(() => $("#date").html(""))
 }
 
 function exportAsCSV(pools, spiked, spikes) {
@@ -145,9 +144,15 @@ function exportAsCSV(pools, spiked, spikes) {
 	link.click()
 }
 
-function generateFilename() {
-	const now = new Date()
-	const formattedDate = `${now.getFullYear()}${now.getMonth()}${now.getDate()}${now.getHours()}${now.getMinutes()}${now.getSeconds()}`
+function generateFilename(date) {
+	// prettier-ignore
+	const formattedDate = `
+		${date.getFullYear()}${
+		date.getMonth() + 1}${
+		date.getDate()}${
+		date.getHours()}${
+		date.getMinutes()}${
+		date.getSeconds()}`
 	return `${runtype}-${formattedDate}`
 }
 
@@ -171,6 +176,6 @@ $(function () {
 		generateSpikes(spikes)
 	}
 
-	$("#pdf").click((_) => exportAsPDF())
-	$("#csv").click((_) => exportAsCSV(pools, spiked, spikes))
+	$("#pdf").click(() => exportAsPDF())
+	$("#csv").click(() => exportAsCSV(pools, spiked, spikes))
 })
