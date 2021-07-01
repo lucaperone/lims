@@ -9,7 +9,7 @@ const libraries_url =
 const credentials = require("./credentials.json")
 
 async function fetchData() {
-	console.log("Starting browser...\n")
+	console.log("\nStarting browser...\n")
 	const { libraries, requests } = await webScrapper()
 
 	console.log("Merging requests...")
@@ -49,6 +49,10 @@ async function fetchData() {
 			multiplex
 		)
 
+		if (pool.ignore === true) {
+			continue
+		}
+
 		if (pool.error != undefined) {
 			return { error: pool.error }
 		}
@@ -56,7 +60,9 @@ async function fetchData() {
 		pool.ready = isReady(pool, libraries)
 		pools.push(pool)
 
-		i += multiplex - 1
+		if (multiplex > 1) {
+			i += multiplex - 1
+		}
 	}
 
 	console.log("Merged requests into " + pools.length + " pools\n")
@@ -112,7 +118,7 @@ async function webScrapper() {
 	)
 
 	console.log("Found " + requests.length + " requests\n")
-	
+
 	await page.click("#StatusRight > a") // Log out
 	await browser.close()
 
@@ -141,7 +147,7 @@ function parseAndMergeRequests(requests, multiplex) {
 	if (run_type === "error") {
 		return error(requests[0][0], `Unkown run type "${requests[0][4]}"`)
 	} else if (run_type === "MiSeq") {
-		continue
+		return ignore(requests[0][0], "MiSeq run")
 	}
 
 	let read_length = requests[0][5] === "2890" ? "100" : requests[0][5]
@@ -207,6 +213,13 @@ function error(request_id, message) {
 	)
 	return {
 		error: `Error with request ${request_id} - ${message}.`,
+	}
+}
+
+function ignore(request_id, message) {
+	console.log(`Ignored request ${request_id} - ${message}.`)
+	return {
+		ignore: true,
 	}
 }
 
