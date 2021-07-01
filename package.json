@@ -1,7 +1,7 @@
 {
 	"name": "uhts-lims",
 	"version": "1.0.0",
-	"description": "",
+	"description": "Interactive application for sequencing run planning",
 	"main": "app.js",
 	"dependencies": {
 		"express": "^4.17.1",
@@ -11,8 +11,16 @@
 	},
 	"devDependencies": {},
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "npm run dev",
+		"dev": "node app.js",
+		"win": "set NODE_ENV=production && node app.js",
+		"prd": "NODE_ENV=production node app.js"
 	},
-	"author": "",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/lucaperone/lims.git"
+	},
+	"author": "Luca Perone",
 	"license": "ISC"
 }
