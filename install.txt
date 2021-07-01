@@ -1,0 +1,14 @@
+- Deploy the app like a classic node.js Express app
+- Run "npm install" to install the required node modules
+- Create a user on the LIMS for the app to use
+- Create a credentials.json file and store the user's username and password like so :
+
+{
+	"username": "",
+	"password": ""
+}
+
+- Start the app with the command :
+	- "npm run win" for a windows machine
+	- "npm run prd" for other machines
+	- "npm start" or "npm run dev" for the development environment 
