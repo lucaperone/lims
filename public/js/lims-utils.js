@@ -21,13 +21,13 @@ export async function getData(page) {
 }
 
 function start() {
-	$("button#load").prop("disabled", true)
+	$(".btn").prop("disabled", true)
 	$(".loader").removeClass("d-none")
 	$(".cache").addClass("d-none")
 }
 
 function end(response) {
-	$("button#load").prop("disabled", false)
+	$(".btn").prop("disabled", false)
 	$(".loader").addClass("d-none")
 	$(".cache").removeClass("d-none")
 
