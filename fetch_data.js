@@ -94,7 +94,7 @@ async function webScrapper() {
 		}
 	)
 
-	console.log("Found " + results.libraries.length + " libraries\n")
+	console.log("Found " + libraries.length + " libraries\n")
 	console.log("Fetching requests...")
 
 	await new_page.goto(requests_url)
@@ -109,7 +109,7 @@ async function webScrapper() {
 		}
 	)
 
-	console.log("Found " + results.requests.length + " requests\n")
+	console.log("Found " + requests.length + " requests\n")
 	
 	await page.click("#StatusRight > a") // Log out
 	await browser.close()
