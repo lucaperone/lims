@@ -6,6 +6,8 @@ const requests_url =
 const libraries_url =
 	"https://lims.ige3.genomics.unige.ch/table/libraries/selactive"
 
+const credentials = require("./credentials.json")
+
 async function fetchData() {
 	console.log("Starting browser...\n")
 	const { libraries, requests } = await webScrapper()
@@ -72,8 +74,8 @@ async function webScrapper() {
 
 	// Login
 	console.log("Logging in...\n")
-	await page.type("#lg_name", "lperone")
-	await page.type("#lg_password", "tkk4dbvb")
+	await page.type("#lg_name", credentials.username)
+	await page.type("#lg_password", credentials.password)
 	await page.click("input[type='submit']")
 
 	// Get cookies
